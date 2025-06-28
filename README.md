@@ -16,8 +16,6 @@
 
 #### [Don't know how to write a good resume? Check out these resume tips](RESUME_TIPS.md)
 
-#### [Still don't know how? Need advice? Ask in the discussion area or share experience](https://github.com/arunava-12/ResumeBuddy/discussions/categories/resume-help)
-
 <p align="center">
   <a href="https://github.com/arunava-12/ResumeBuddy/stargazers">
     <img alt="GitHub stars" src="https://img.shields.io/github/stars/arunava-12/ResumeBuddy?style=for-the-badge&logo=github&color=FFB33A">
