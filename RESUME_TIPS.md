@@ -1,53 +1,51 @@
-# 简历建议（如果你有你的见解，欢迎提出 pr 补充）
+# Resume Tips (If you have your own insights, feel free to submit a PR and contribute)
 
-## 基本原则
+## Basic Principles
 
-1. **简洁明了**
+1. **Concise and Clear**
 
-   - 简历长度最好在 1 页之内（我指的是实习应届，因为简历可能是在你自我介绍时面试官才开始阅读，太长让人抓不到重点）
+   - Ideally, keep your resume to **one page** (especially for internships or fresh graduates, since interviewers often read your resume while you're introducing yourself — too long and they won't catch the key points).
 
-2. **突出重点**
+2. **Highlight Key Information**
 
-   - 将最相关和最重要的信息放在最显眼的位置
-   - 根据应聘职位调整内容重点
-   - 使用数字和具体成果来量化你的成果
+   - Put the most relevant and important information in the most prominent position.
+   - Tailor the content emphasis according to the position you're applying for.
+   - Use numbers and specific results to quantify your achievements.
 
-3. **专业规范**
-   - 确保没有拼写和语法错误
-   - 保持整体视觉效果清爽整洁
+3. **Professional and Standardized**
 
-## 内容编写建议
+   - Ensure there are no spelling or grammatical errors.
+   - Maintain a clean and tidy visual layout.
 
-### 个人信息
+## Content Writing Suggestions
 
-- 包含必要的联系方式：姓名、电话、电子邮件
-- 可选择性添加：个人技术博客、GitHub 账号
-- 避免包含与工作无关的个人信息，如什么爱好喜欢看动漫，下象棋之类的（nobody care）
+### Personal Information
 
-### 教育背景
+- Include essential contact info: **name, phone number, email**.
+- Optionally add: **personal tech blog, GitHub account**.
+- Avoid irrelevant personal details like "hobbies include watching anime or playing chess" (nobody cares).
 
-- 列出学校名称（如果是 211 但你觉得知名度可能不高，可考虑标出 211）、专业、学位和入学及毕业时间
-- 突出学术成就（如有的话）
-- 除非 GPA 较高，不然不推荐列出
+### Educational Background
 
-### 工作经验
+- List the **school name** (if it’s a "211 university" but not widely known, consider noting that), **major**, **degree**, and **enrollment/graduation dates**.
+- Highlight academic achievements (if applicable).
+- Unless your **GPA is high**, it’s generally not recommended to include it.
 
-- 按时间倒序排列，突出最近和最相关的经验
-- 使用行动动词开头描述您的职责和成就
-- 强调成果和影响，而不是简单列举职责
-- 推荐格式：
-  ```
-  成就 = 行动动词 + 具体任务 + 量化结果
-  例如：优化了登录系统性能，将响应时间减少50%，日活用户增长20%
-  ```
+### Work Experience
 
-### 项目经验
+- List in **reverse chronological order**, focusing on the most recent and most relevant experience.
+- Use **action verbs** to describe your responsibilities and accomplishments.
+- Emphasize **outcomes and impact**, rather than just listing duties.
+- Recommended format:
 
-- 如果从哔哩哔哩抄的项目，一定要记得改名字
-- 如果是多人合作项目，重点描述您在项目中的具体角色和贡献
 
-### 技能部分
+### Project Experience
 
-- 按照熟练程度分类列出技术栈
-- 突出与目标职位相关的核心技能
-- 可以简单说明掌握程度，但要诚实（不要看过就是熟练，了解就是精通，被问到就老实了）
+- If the project was copied from Bilibili (a Chinese platform), **make sure to rename it**.
+- If it was a team project, focus on describing **your specific role and contributions**.
+
+### Skills Section
+
+- Categorize your tech stack by **proficiency level**.
+- Highlight **core skills relevant to the target position**.
+- You may briefly state your proficiency, but be **honest** (just watching a tutorial doesn't mean you're proficient — don’t claim to be advanced unless you really are, or you'll be in trouble when questioned).
