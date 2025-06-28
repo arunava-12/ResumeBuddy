@@ -62,8 +62,8 @@ ResumeBuddy is a free open-source online resume builder that helps job seekers q
 
 This project supports Markdown format to make resume content editing easier:
 
-- **Unordered lists**: Type `- ` or `* ` to create unordered lists (note the space after)
-- **Ordered lists**: Type `1. ` to create ordered lists (note the space after)
+- **Unordered lists**: Type `-` or `*` to create unordered lists (note the space after)
+- **Ordered lists**: Type `1.` to create ordered lists (note the space after)
 - **Bold text**: Type `**text**` or `__text__` to create bold text
 
 ### 🤝 Contribute
