@@ -1,4 +1,4 @@
 // Prettier config for Prettier 3.x and plugin compatibility
-module.exports = {
+module.exports = { 
   plugins: ["prettier-plugin-tailwindcss"],
 };
