@@ -1,72 +1,55 @@
 import { Form } from "components/ResumeForm/Form";
-import {
-  BulletListTextarea,
-  InputGroupWrapper,
-} from "components/ResumeForm/Form/InputGroup";
-import { FeaturedSkillInput } from "components/ResumeForm/Form/FeaturedSkillInput";
+import { InputGroupWrapper } from "components/ResumeForm/Form/InputGroup";
 import { useEffect, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { selectSkills, changeSkills } from "lib/redux/resumeSlice";
 import {
   selectThemeColor,
-  changeFormHeading,
   updateFormHeadingIfNotCustomized,
 } from "lib/redux/settingsSlice";
-import { useLanguageRedux } from "../../lib/hooks/useLanguageRedux";
+
+const SKILL_CATEGORIES = [
+  "Languages : ",
+  "Frameworks : ",
+  "Tools : ",
+  "Libraries : ",
+  "Soft Skills : ",
+];
 
 export const SkillsForm = () => {
   const skills = useAppSelector(selectSkills);
   const dispatch = useAppDispatch();
-  const { language } = useLanguageRedux();
-  const { featuredSkills, descriptions } = skills;
-  const form = "skills";
   const themeColor = useAppSelector(selectThemeColor) || "#38bdf8";
+  const form = "skills";
 
   const translate = useCallback(
     (key: string) => {
-      const translations: Record<string, Record<string, string>> = {
-        skills: {
-          en: "Skills",
-          zh: "技能",
-        },
-        skillsList: {
-          en: "Skills List",
-          zh: "技能列表",
-        },
-        skillsItem: {
-          en: "Supports Markdown, see editor instructions for details",
-          zh: "支持Markdown，详见编辑器使用说明",
-        },
-        featuredSkills: {
-          en: "Featured Skills (Optional)",
-          zh: "特色技能（可选）",
-        },
-        featuredSkillsDescription: {
-          en: "Featured skills are optional and highlight your top skills. More circles indicate higher proficiency.",
-          zh: "特色技能是可选项，用于突出您的顶级技能，圆圈越多表示熟练度越高。",
-        },
-        featuredSkillPlaceholder: {
-          en: "Featured Skill",
-          zh: "特色技能",
-        },
+      const translations: Record<string, string> = {
+        skills: "Skills",
+        includeCategory: "Show this category on resume",
+        categoryPlaceholder: "Add skills separated by commas (e.g. Python, C++, JavaScript)",
       };
-
-      return translations[key]?.[language] || key;
+      return translations[key] || key;
     },
-    [language]
+    []
   );
-  const handleSkillsChange = (field: "descriptions", value: string[]) => {
-    dispatch(changeSkills({ field, value }));
-  };
-  const handleFeaturedSkillsChange = (
-    idx: number,
-    skill: string,
-    rating: number
-  ) => {
-    dispatch(changeSkills({ field: "featuredSkills", idx, skill, rating }));
+
+  const handleCategoryToggle = (category: string, isChecked: boolean) => {
+    const updatedCategories = {
+      ...skills.selectedCategories,
+      [category]: isChecked,
+    };
+    dispatch(changeSkills({ field: "selectedCategories", value: updatedCategories }));
   };
 
-  // 更新表单标题（仅在用户未自定义时）
+  const handleCategorySkillsChange = (category: string, value: string) => {
+    const updatedCategorySkills = {
+      ...skills.categorySkills,
+      [category]: value,
+    };
+    dispatch(changeSkills({ field: "categorySkills", value: updatedCategorySkills }));
+  };
+
   useEffect(() => {
     dispatch(
       updateFormHeadingIfNotCustomized({
@@ -74,44 +57,34 @@ export const SkillsForm = () => {
         value: translate("skills"),
       })
     );
-  }, [dispatch, language, form, translate]);
+  }, [dispatch, translate]);
 
   return (
     <Form form={form}>
-      {" "}
-      <div className="col-span-full grid grid-cols-6 gap-3">
-        <div className="col-span-full">
-          <BulletListTextarea
-            label={translate("skillsList")}
-            labelClassName="col-span-full"
-            name="descriptions"
-            placeholder={translate("skillsItem")}
-            value={descriptions}
-            onChange={handleSkillsChange}
-          />
-        </div>
-        <div className="col-span-full mb-4 mt-6 border-t-2 border-dotted border-gray-200" />
-        <InputGroupWrapper
-          label={translate("featuredSkills")}
-          className="col-span-full"
-        >
-          <p className="mt-2 text-sm font-normal text-gray-600">
-            {translate("featuredSkillsDescription")}
-          </p>
-        </InputGroupWrapper>
-
-        {featuredSkills.map(({ skill, rating }, idx) => (
-          <FeaturedSkillInput
-            key={idx}
-            className="col-span-3"
-            skill={skill}
-            rating={rating}
-            setSkillRating={(newSkill, newRating) => {
-              handleFeaturedSkillsChange(idx, newSkill, newRating);
-            }}
-            placeholder={`${translate("featuredSkillPlaceholder")} ${idx + 1}`}
-            circleColor={themeColor}
-          />
+      <div className="col-span-full grid grid-cols-6 gap-4">
+        {SKILL_CATEGORIES.map((category) => (
+          <div key={category} className="col-span-full border-b border-gray-200 pb-4 mb-4">
+            <InputGroupWrapper label={category} labelClassName="text-white">
+              <div className="flex items-center gap-2 mb-2">
+                <input
+                  type="checkbox"
+                  checked={skills.selectedCategories?.[category] ?? true}
+                  onChange={(e) => handleCategoryToggle(category, e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label className="text-sm text-white">
+                  {translate("includeCategory")}
+                </label>
+              </div>
+              <textarea
+                placeholder={translate("categoryPlaceholder")}
+                value={skills.categorySkills?.[category] || ""}
+                onChange={(e) => handleCategorySkillsChange(category, e.target.value)}
+                rows={3}
+                className="w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-200"
+              />
+            </InputGroupWrapper>
+          </div>
         ))}
       </div>
     </Form>

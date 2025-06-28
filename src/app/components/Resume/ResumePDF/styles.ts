@@ -45,6 +45,18 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
   },
+    subHeading: {
+    fontSize: 11,
+    fontWeight: 600,
+    marginBottom: 4,
+    color: "#333333",
+  },
+
+  paragraph: {
+    fontSize: 10,
+    lineHeight: 1.5,
+    color: "#111111",
+  },
   flexRowBetween: {
     display: "flex",
     flexDirection: "row",

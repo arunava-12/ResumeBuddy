@@ -3,13 +3,11 @@ import { useState, useEffect } from "react";
 import {
   useAppSelector,
   useAppDispatch,
-  useSaveStateToLocalStorageOnChange,
   useSetInitialStore,
 } from "lib/redux/hooks";
 import {
   ShowForm,
   selectFormsOrder,
-  changeFormHeading,
   updateFormHeadingIfNotCustomized,
 } from "lib/redux/settingsSlice";
 import { EditorInstructions } from "./EditorInstructions";
@@ -22,7 +20,7 @@ import { ThemeForm } from "components/ResumeForm/ThemeForm";
 import { CustomForm } from "components/ResumeForm/CustomForm";
 import { FlexboxSpacer } from "components/FlexboxSpacer";
 import { cx } from "lib/cx";
-import { useLanguageRedux } from "../../lib/hooks/useLanguageRedux";
+import DotGrid from "../DotGrid/DotGrid";
 
 const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
   workExperiences: WorkExperiencesForm,
@@ -34,74 +32,69 @@ const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
 
 export const ResumeForm = () => {
   useSetInitialStore();
-  // 移除重复的 useSaveStateToLocalStorageOnChange，因为已经在 providers.tsx 中调用了
 
   const formsOrder = useAppSelector(selectFormsOrder);
   const [isHover, setIsHover] = useState(false);
-  const { language } = useLanguageRedux();
   const dispatch = useAppDispatch();
 
-  // 初始化所有表单标题
   useEffect(() => {
-    // 根据当前语言设置所有表单标题
-    const updateFormHeadings = () => {
-      const translations: Record<ShowForm, Record<string, string>> = {
-        workExperiences: {
-          en: "Work Experience",
-          zh: "工作经历",
-        },
-        educations: {
-          en: "Education",
-          zh: "教育经历",
-        },
-        projects: {
-          en: "Projects",
-          zh: "项目经历",
-        },
-        skills: {
-          en: "Skills",
-          zh: "技能",
-        },
-        custom: {
-          en: "Custom Section",
-          zh: "自定义部分",
-        },
-      };
-
-      // 为每个表单设置正确的标题（仅在用户未自定义时）
-      Object.entries(translations).forEach(([form, texts]) => {
-        dispatch(
-          updateFormHeadingIfNotCustomized({
-            field: form as ShowForm,
-            value: texts[language] || texts["zh"],
-          })
-        );
-      });
+    const translations: Record<ShowForm, string> = {
+      workExperiences: "Work Experience",
+      educations: "Education",
+      projects: "Projects",
+      skills: "Skills",
+      custom: "Custom Section",
     };
 
-    updateFormHeadings();
-  }, [dispatch, language]);
+    Object.entries(translations).forEach(([form, text]) => {
+      dispatch(
+        updateFormHeadingIfNotCustomized({
+          field: form as ShowForm,
+          value: text,
+        }),
+      );
+    });
+  }, [dispatch]);
+
   return (
-    <div
-      className={cx(
-        "flex justify-center scrollbar-thin scrollbar-track-gray-100 md:h-[calc(100vh-var(--top-nav-bar-height))] md:justify-end md:overflow-y-scroll",
-        isHover ? "scrollbar-thumb-gray-200" : "scrollbar-thumb-gray-100"
-      )}
-      onMouseOver={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-    >
-      <section className="flex max-w-2xl flex-col gap-8 p-[var(--resume-padding)]">
-        <EditorInstructions />
-        <ProfileForm />
-        {formsOrder.map((form) => {
-          const Component = formTypeToComponent[form];
-          return <Component key={form} />;
-        })}
-        <ThemeForm />
-        <br />
-      </section>
-      <FlexboxSpacer maxWidth={30} className="hidden md:block" />{" "}
-      {/* 从50减小到30 */}
+    <div className="relative h-full w-full overflow-hidden md:h-[calc(100vh-var(--top-nav-bar-height))] bg-[#102617]">
+      {/* ✅ DotGrid in Background */}
+      <div className="absolute inset-0 z-0">
+        <DotGrid
+          dotSize={4}
+          gap={12}
+          baseColor="#CDEDB3"
+          activeColor="#022212"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        />
+      </div>
+
+      {/* ✅ Foreground Scrollable Form */}
+      <div
+  className={cx(
+    "relative z-10 flex h-full justify-center md:justify-end overflow-y-auto scroll-smooth hide-scrollbar",
+    isHover ? "" : ""
+  )}
+
+        onMouseOver={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+      >
+<section className="flex max-w-2xl flex-col gap-8 p-[var(--resume-padding)] pt-[var(--top-nav-bar-height)] rounded-2xl">
+          <EditorInstructions />
+          <ProfileForm />
+          {formsOrder.map((form) => {
+            const Component = formTypeToComponent[form];
+            return <Component key={form} />;
+          })}
+          <ThemeForm />
+          <br />
+        </section>
+        <FlexboxSpacer maxWidth={30} className="hidden md:block" />
+      </div>
     </div>
   );
 };

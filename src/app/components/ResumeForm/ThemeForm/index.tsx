@@ -17,68 +17,49 @@ import {
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import type { FontFamily } from "components/fonts/constants";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
-import { useLanguageRedux } from "../../../lib/hooks/useLanguageRedux";
 
 export const ThemeForm = () => {
   const settings = useAppSelector(selectSettings);
   const { fontSize, fontFamily, documentSize, template } = settings;
   const themeColor = settings.themeColor || DEFAULT_THEME_COLOR;
   const dispatch = useAppDispatch();
-  const { language } = useLanguageRedux();
 
   const handleSettingsChange = (field: GeneralSetting, value: string) => {
     dispatch(changeSettings({ field, value }));
   };
 
-  // 翻译函数
   const translate = (key: string) => {
-    const translations: Record<string, Record<string, string>> = {
-      settings: {
-        en: "Resume Settings",
-        zh: "简历设置",
-      },
-      template: {
-        en: "Template Style",
-        zh: "模板样式",
-      },
-      themeColor: {
-        en: "Theme Color",
-        zh: "主题颜色",
-      },
-      fontFamily: {
-        en: "Font Family",
-        zh: "字体（注意中英文字体，仅英文导出无中文）",
-      },
-      fontSize: {
-        en: "Font Size",
-        zh: "字体大小",
-      },
-      documentSize: {
-        en: "Document Size",
-        zh: "文档大小",
-      },
+    const translations: Record<string, string> = {
+      settings: "Resume Settings",
+      template: "Template Style",
+      themeColor: "Theme Color",
+      fontFamily: "Font Family",
+      fontSize: "Font Size",
+      documentSize: "Document Size",
     };
 
-    return translations[key]?.[language] || key;
+    return translations[key] || key;
   };
 
   return (
     <BaseForm>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 text-white">
         <div className="flex items-center gap-2">
-          <Cog6ToothIcon className="h-6 w-6 text-gray-600" aria-hidden="true" />
-          <h1 className="text-lg font-semibold tracking-wide text-gray-900 ">
+          <Cog6ToothIcon className="h-6 w-6 text-white" aria-hidden="true" />
+          <h1 className="text-lg font-semibold tracking-wide">
             {translate("settings")}
           </h1>
         </div>
+
         <div>
-          <InputGroupWrapper label={translate("template")} />
+          <InputGroupWrapper label={translate("template")} labelClassName="text-white" />
           <TemplateSelections
             themeColor={themeColor}
             selectedTemplate={template}
             handleSettingsChange={handleSettingsChange}
           />
         </div>
+
         <div>
           <InlineInput
             label={translate("themeColor")}
@@ -86,6 +67,7 @@ export const ThemeForm = () => {
             value={settings.themeColor}
             placeholder={DEFAULT_THEME_COLOR}
             onChange={handleSettingsChange}
+            labelClassName="text-white"
             inputStyle={{ color: themeColor }}
           />
           <div className="mt-2 flex flex-wrap gap-2">
@@ -105,32 +87,45 @@ export const ThemeForm = () => {
               </div>
             ))}
           </div>
-        </div>{" "}
+        </div>
+
         <div>
-          <InputGroupWrapper label={translate("fontFamily")} />
+          <InputGroupWrapper label={translate("fontFamily")} labelClassName="text-white" />
           <FontFamilySelectionsCSR
             selectedFontFamily={fontFamily}
             themeColor={themeColor}
             handleSettingsChange={handleSettingsChange}
           />
-        </div>{" "}
+        </div>
+
         <div>
           <InlineInput
-            label={translate("fontSize") + " (pt)"}
-            name="fontSize"
-            value={fontSize}
-            placeholder="11"
-            onChange={handleSettingsChange}
-          />
+  label={translate("fontSize") + " (pt)"}
+  name="fontSize"
+  value={fontSize}
+  placeholder="11"
+  onChange={handleSettingsChange}
+  labelClassName="text-white"
+inputStyle={{
+  backgroundColor: "white",
+  color: "black",
+  border: "1px solid #4b5563", // gray-600
+  borderRadius: "0.375rem", // rounded-md
+  padding: "0.25rem 0.5rem",
+}}
+
+/>
+
           <FontSizeSelections
             fontFamily={fontFamily as FontFamily}
             themeColor={themeColor}
             selectedFontSize={fontSize}
             handleSettingsChange={handleSettingsChange}
           />
-        </div>{" "}
+        </div>
+
         <div>
-          <InputGroupWrapper label={translate("documentSize")} />
+          <InputGroupWrapper label={translate("documentSize")} labelClassName="text-white" />
           <DocumentSizeSelections
             themeColor={themeColor}
             selectedDocumentSize={documentSize}

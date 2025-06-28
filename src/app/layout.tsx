@@ -5,7 +5,6 @@ import { Providers } from "./providers";
 import ClientLayout from "./ClientLayout";
 import { getMetadata } from "./metadata";
 
-// 使用中英文双语元数据
 export const metadata = getMetadata();
 
 export default function RootLayout({
@@ -14,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
+    <html>
       <body>
         <Providers>
           <ClientLayout>

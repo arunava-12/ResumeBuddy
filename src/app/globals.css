@@ -32,3 +32,31 @@
   --resume-control-bar-height: 3rem;
   --resume-padding: 1.5rem;
 }
+
+.card-spotlight {
+  background-color: var(--theme-dark, #0a0a0a); /* or use bg-gradient in JSX */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  @apply bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-lg ring-1 ring-white/30;
+}
+
+/* globals.css */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* styles/globals.css or a similar global file */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

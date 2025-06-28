@@ -15,10 +15,9 @@ import {
   useRegisterReactPDFFont,
   useRegisterReactPDFHyphenationCallback,
 } from "components/fonts/hooks";
-import { NonEnglishFontsCSSLazyLoader } from "components/fonts/NonEnglishFontsCSSLoader";
+import DotGrid from "../DotGrid/DotGrid";
 
 export const Resume = () => {
-  // 根据设备类型设置初始缩放比例
   const getInitialScale = () => {
     if (typeof window !== "undefined") {
       return window.innerWidth < 768 ? 0.5 : 0.8;
@@ -37,8 +36,10 @@ export const Resume = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
+
   const document = useMemo(
     () => <ResumePDF resume={resume} settings={settings} isPDF={true} />,
     [resume, settings]
@@ -48,35 +49,49 @@ export const Resume = () => {
   useRegisterReactPDFHyphenationCallback(settings.fontFamily);
 
   return (
-    <>
-      <NonEnglishFontsCSSLazyLoader />
-      <div className="relative flex justify-center md:justify-start">
-        <FlexboxSpacer maxWidth={30} className="hidden md:block" />
-        {/* 从50减小到30 */}
-        <div className="relative">
-          <section className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-hidden md:p-[var(--resume-padding)]">
-            <ResumeIframeCSR
-              documentSize={settings.documentSize}
-              scale={scale}
-              enablePDFViewer={DEBUG_RESUME_PDF_FLAG}
-            >
-              <ResumePDF
-                resume={resume}
-                settings={settings}
-                isPDF={DEBUG_RESUME_PDF_FLAG}
-              />
-            </ResumeIframeCSR>
-          </section>
-          <ResumeControlBarCSR
-            scale={scale}
-            setScale={setScale}
-            documentSize={settings.documentSize}
-            document={document}
-            fileName={resume.profile.name + " - Resume"}
-          />
-        </div>
-        <ResumeControlBarBorder />
+<div className="relative flex justify-center md:justify-start w-full h-full pt-[var(--top-nav-bar-height)]">
+      {/* ✅ DotGrid background */}
+      <div className="absolute inset-0 z-0">
+        <DotGrid
+          dotSize={4}
+          gap={12}
+          baseColor="#CDEDB3"
+          activeColor="#022212"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        />
       </div>
-    </>
+
+      <FlexboxSpacer maxWidth={30} className="hidden md:block" />
+
+      {/* ✅ Foreground content */}
+      <div className="relative z-10">
+<section className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-auto md:p-[var(--resume-padding)] hide-scrollbar">
+          <ResumeIframeCSR
+            documentSize={settings.documentSize}
+            scale={scale}
+            enablePDFViewer={DEBUG_RESUME_PDF_FLAG}
+          >
+            <ResumePDF
+              resume={resume}
+              settings={settings}
+              isPDF={DEBUG_RESUME_PDF_FLAG}
+            />
+          </ResumeIframeCSR>
+        </section>
+        <ResumeControlBarCSR
+          scale={scale}
+          setScale={setScale}
+          documentSize={settings.documentSize}
+          document={document}
+          fileName={resume.profile.name + " - Resume"}
+        />
+      </div>
+
+      <ResumeControlBarBorder />
+    </div>
   );
 };

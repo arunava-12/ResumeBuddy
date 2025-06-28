@@ -33,10 +33,8 @@ import { InputGroupWrapper, INPUT_CLASS_NAME } from "./InputGroup";
 import { saveStateToLocalStorage } from "lib/redux/local-storage";
 import { store } from "lib/redux/store";
 
-// Lexical 节点配置 - 包含列表和文本格式化节点
 const LexicalNodes = [ListNode, ListItemNode, TextNode, ParagraphNode];
 
-// 自定义的Markdown转换器 - 包含列表和粗体转换器
 const LIST_TRANSFORMERS = [
   ORDERED_LIST,
   UNORDERED_LIST,
@@ -44,12 +42,10 @@ const LIST_TRANSFORMERS = [
   BOLD_UNDERSCORE,
 ];
 
-// 简单的错误边界函数
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-// 自定义占位符组件
 function Placeholder({ placeholder }: { placeholder: string }) {
   return (
     <div className="pointer-events-none absolute left-[13px] top-[10px] text-gray-400">
@@ -81,14 +77,12 @@ const extractContentFromEditor = (editorState: EditorState): string[] => {
         const textNode = node as TextNode;
         let text = textNode.getTextContent();
 
-        // 如果文本是粗体，用 Markdown 语法包装
         if (textNode.hasFormat("bold")) {
           text = `**${text}**`;
         }
 
         return text;
       } else if (node.getChildren) {
-        // 递归处理有子节点的节点
         const children = node.getChildren();
         return children.map(extractFormattedText).join("");
       }

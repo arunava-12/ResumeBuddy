@@ -7,40 +7,30 @@ import {
   changeFormHeading,
   updateFormHeadingIfNotCustomized,
 } from "lib/redux/settingsSlice";
-import { useLanguageRedux } from "../../lib/hooks/useLanguageRedux";
 
 export const CustomForm = () => {
   const custom = useAppSelector(selectCustom);
   const dispatch = useAppDispatch();
-  const { language } = useLanguageRedux();
   const { descriptions } = custom;
   const form = "custom";
 
   const translate = useCallback(
     (key: string) => {
-      const translations: Record<string, Record<string, string>> = {
-        custom: {
-          en: "Custom Section",
-          zh: "自定义部分",
-        },
-        customContent: {
-          en: "Custom Content",
-          zh: "自定义内容",
-        },
-        addCustomContent: {
-          en: "Supports Markdown, see editor instructions for details",
-          zh: "支持Markdown，详见编辑器使用说明",
-        },
+      const translations: Record<string, string> = {
+        custom: "Custom Section",
+        customContent: "Custom Content",
+        addCustomContent: "Supports Markdown, see editor instructions for details",
       };
 
-      return translations[key]?.[language] || key;
+      return translations[key] || key;
     },
-    [language]
+    []
   );
+
   const handleCustomChange = (field: "descriptions", value: string[]) => {
     dispatch(changeCustom({ field, value }));
   };
-  // 更新表单标题（仅在用户未自定义时）
+
   useEffect(() => {
     dispatch(
       updateFormHeadingIfNotCustomized({
@@ -48,16 +38,15 @@ export const CustomForm = () => {
         value: translate("custom"),
       })
     );
-  }, [dispatch, language, form, translate]);
+  }, [dispatch, form, translate]);
 
   return (
     <Form form={form}>
       <div className="col-span-full grid grid-cols-6 gap-3">
-        {" "}
         <div className="col-span-full">
           <BulletListTextarea
             label={translate("customContent")}
-            labelClassName="col-span-full"
+            labelClassName="col-span-full text-white"
             name="descriptions"
             placeholder={translate("addCustomContent")}
             value={descriptions}

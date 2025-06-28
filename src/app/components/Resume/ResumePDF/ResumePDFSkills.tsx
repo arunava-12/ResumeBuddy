@@ -1,8 +1,6 @@
-import { View } from "@react-pdf/renderer";
+import { Text, View } from "@react-pdf/renderer";
 import {
   ResumePDFSection,
-  ResumePDFBulletList,
-  ResumeFeaturedSkill,
 } from "components/Resume/ResumePDF/common";
 import { styles, spacing } from "components/Resume/ResumePDF/styles";
 import type { ResumeSkills } from "lib/redux/types";
@@ -19,13 +17,16 @@ export const ResumePDFSkills = ({
   themeColor: string;
   templateStyles: TemplateStyles;
 }) => {
-  const { descriptions, featuredSkills } = skills;
-  const featuredSkillsWithText = featuredSkills.filter((item) => item.skill);
-  const featuredSkillsPair = [
-    [featuredSkillsWithText[0], featuredSkillsWithText[3]],
-    [featuredSkillsWithText[1], featuredSkillsWithText[4]],
-    [featuredSkillsWithText[2], featuredSkillsWithText[5]],
-  ];
+  const { categorySkills, selectedCategories } = skills;
+
+  // If no selected skill category has content, skip rendering
+  const hasContent =
+  categorySkills &&
+  Object.entries(categorySkills).some(
+    ([key, value]) => selectedCategories?.[key] && value.trim() !== ""
+  );
+
+  if (!hasContent) return null;
 
   return (
     <ResumePDFSection
@@ -34,38 +35,20 @@ export const ResumePDFSkills = ({
       style={templateStyles.section}
       titleStyle={templateStyles.sectionTitle}
     >
-      {featuredSkillsWithText.length > 0 && (
-        <View style={{ ...styles.flexRowBetween, marginTop: spacing["0.5"] }}>
-          {featuredSkillsPair.map((pair, idx) => (
-            <View
-              key={idx}
-              style={{
-                ...styles.flexCol,
-              }}
-            >
-              {pair.map((featuredSkill, idx) => {
-                if (!featuredSkill) return null;
-                return (
-                  <ResumeFeaturedSkill
-                    key={idx}
-                    skill={featuredSkill.skill}
-                    rating={featuredSkill.rating}
-                    themeColor={themeColor}
-                    style={{
-                      justifyContent: "flex-end",
-                    }}
-                  />
-                );
-              })}
+      <View style={{ ...styles.flexCol, gap: spacing["0.5"] }}>
+        {Object.entries(categorySkills).map(([category, value]) => {
+          const isVisible = selectedCategories?.[category];
+          if (!isVisible || !value.trim()) return null;
+
+          return (
+            <View key={category} style={{ marginBottom: spacing["0.5"] }}>
+              <Text style={templateStyles.subHeading || styles.subHeading}>
+                {category}
+              </Text>
+              <Text style={styles.paragraph}>{value}</Text>
             </View>
-          ))}
-        </View>
-      )}
-      <View style={{ ...styles.flexCol }}>
-        <ResumePDFBulletList
-          items={descriptions}
-          bulletStyle={templateStyles.bullet}
-        />
+          );
+        })}
       </View>
     </ResumePDFSection>
   );

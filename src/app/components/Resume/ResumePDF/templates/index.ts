@@ -17,6 +17,7 @@ export type TemplateStyles = {
   sectionTitle?: Style;
   sectionContent?: Style;
   contact?: Style;
+  subHeading?: Style;
   bullet?: Style;
   date?: Style;
   company?: Style;

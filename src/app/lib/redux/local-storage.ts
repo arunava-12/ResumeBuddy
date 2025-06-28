@@ -4,7 +4,6 @@ import type { RootState } from "lib/redux/store";
 
 export const LOCAL_STORAGE_KEY = "resume-to-job-state";
 
-// 检查 localStorage 是否可用（在某些隐私模式下可能不可用）
 const isLocalStorageAvailable = () => {
   try {
     if (typeof window === "undefined") return false;
@@ -20,10 +19,9 @@ const isLocalStorageAvailable = () => {
 
 export const loadStateFromLocalStorage = () => {
   try {
-    // 确保只在浏览器环境中访问localStorage，并且localStorage可用
     if (!isLocalStorageAvailable()) {
       if (process.env.NODE_ENV === "development") {
-        console.warn("localStorage 不可用，无法加载状态");
+        console.warn("localStorage is not available. Cannot load state.");
       }
       return undefined;
     }
@@ -31,70 +29,66 @@ export const loadStateFromLocalStorage = () => {
     const stringifiedState = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!stringifiedState) {
       if (process.env.NODE_ENV === "development") {
-        console.info("localStorage 中没有找到保存的状态");
+        console.info("No saved state found in localStorage.");
       }
       return undefined;
     }
 
     const parsedState = JSON.parse(stringifiedState);
     if (process.env.NODE_ENV === "development") {
-      console.info("成功从 localStorage 加载状态");
+      console.info("Successfully loaded state from localStorage.");
     }
     return parsedState;
   } catch (e) {
-    console.error("从 localStorage 加载数据失败:", e);
+    console.error("Failed to load state from localStorage:", e);
     return undefined;
   }
 };
 
 export const saveStateToLocalStorage = (state: RootState) => {
   try {
-    // 确保只在浏览器环境中访问localStorage，并且localStorage可用
     if (!isLocalStorageAvailable()) {
       if (process.env.NODE_ENV === "development") {
-        console.warn("localStorage 不可用，无法保存状态");
+        console.warn("localStorage is not available. Cannot save state.");
       }
       return;
     }
 
-    // 检查状态对象是否为空
     if (!state || Object.keys(state).length === 0) {
       if (process.env.NODE_ENV === "development") {
-        console.warn("尝试保存空状态到 localStorage，操作已跳过");
+        console.warn("Attempted to save an empty state. Operation skipped.");
       }
       return;
     }
 
     const stringifiedState = JSON.stringify(state);
-
-    // 检查序列化后的状态大小是否超过限制（大约5MB）
     const stateSize = new Blob([stringifiedState]).size;
+
     if (stateSize > 4 * 1024 * 1024) {
-      // 4MB 警告阈值
+      // Warn at 4MB threshold
       if (process.env.NODE_ENV === "development") {
         console.warn(
-          `状态大小(${Math.round(
+          `State size (${Math.round(
             stateSize / 1024 / 1024
-          )}MB)接近localStorage限制，这可能导致保存失败`
+          )}MB) is approaching localStorage limit, which may cause save failure.`
         );
       }
     }
 
     localStorage.setItem(LOCAL_STORAGE_KEY, stringifiedState);
 
-    // 验证数据是否成功保存
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!savedData) {
-      console.error("数据保存到 localStorage 后无法验证");
+      console.error("Failed to verify data after saving to localStorage.");
     } else if (process.env.NODE_ENV === "development") {
       console.info(
-        `成功保存状态到 localStorage，大小: ${Math.round(stateSize / 1024)}KB`
+        `Successfully saved state to localStorage. Size: ${Math.round(stateSize / 1024)}KB`
       );
     }
   } catch (e) {
-    console.error("保存数据到 localStorage 失败:", e);
+    console.error("Failed to save state to localStorage:", e);
     if (e instanceof DOMException && e.name === "QuotaExceededError") {
-      console.error("localStorage 配额已满，无法保存状态。请考虑减少状态大小");
+      console.error("localStorage quota exceeded. Consider reducing the state size.");
     }
   }
 };

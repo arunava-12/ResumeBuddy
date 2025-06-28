@@ -8,52 +8,31 @@ import { useEffect, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { selectProjects, changeProjects } from "lib/redux/resumeSlice";
 import type { ResumeProject } from "lib/redux/types";
-import { useLanguageRedux } from "../../lib/hooks/useLanguageRedux";
 import {
-  changeFormHeading,
   updateFormHeadingIfNotCustomized,
 } from "lib/redux/settingsSlice";
 
 export const ProjectsForm = () => {
   const projects = useAppSelector(selectProjects);
   const dispatch = useAppDispatch();
-  const { language } = useLanguageRedux();
   const showDelete = projects.length > 1;
 
   const translate = useCallback(
     (key: string) => {
-      const translations: Record<string, Record<string, string>> = {
-        projects: {
-          en: "Projects",
-          zh: "项目经历",
-        },
-        addProject: {
-          en: "Add Project",
-          zh: "添加项目",
-        },
-        deleteProject: {
-          en: "Delete Project",
-          zh: "删除项目",
-        },
-        projectName: {
-          en: "Project Name",
-          zh: "项目名称",
-        },
-        date: {
-          en: "Date",
-          zh: "日期",
-        },
-        projectDescription: {
-          en: "Project Description",
-          zh: "项目描述",
-        },
+      const translations: Record<string, string> = {
+        projects: "Projects",
+        addProject: "Add Project",
+        deleteProject: "Delete Project",
+        projectName: "Project Name",
+        date: "Date",
+        projectDescription: "Project Description",
       };
 
-      return translations[key]?.[language] || key;
+      return translations[key] || key;
     },
-    [language]
+    []
   );
-  // 更新表单标题（仅在用户未自定义时）
+
   useEffect(() => {
     dispatch(
       updateFormHeadingIfNotCustomized({
@@ -61,16 +40,13 @@ export const ProjectsForm = () => {
         value: translate("projects"),
       })
     );
-  }, [dispatch, language, translate]);
+  }, [dispatch, translate]);
 
   return (
     <Form form="projects" addButtonText={translate("addProject")}>
       {projects.map(({ id, project, date, descriptions }, idx) => {
         const handleProjectChange = (
-          ...[
-            field,
-            value,
-          ]: CreateHandleChangeArgsWithDescriptions<ResumeProject>
+          ...[field, value]: CreateHandleChangeArgsWithDescriptions<ResumeProject>
         ) => {
           dispatch(changeProjects({ idx, field, value } as any));
         };
@@ -93,27 +69,23 @@ export const ProjectsForm = () => {
               placeholder=""
               value={project}
               onChange={handleProjectChange}
-              labelClassName="col-span-4"
-            />{" "}
+              labelClassName="col-span-4 text-white"
+            />
             <Input
               name="date"
               label={translate("date")}
               placeholder=""
               value={date}
               onChange={handleProjectChange}
-              labelClassName="col-span-2"
-            />{" "}
+              labelClassName="col-span-2 text-white"
+            />
             <BulletListTextarea
               name="descriptions"
               label={translate("projectDescription")}
-              placeholder={
-                language === "en"
-                  ? "Supports Markdown, see editor instructions for details"
-                  : "支持Markdown，详见编辑器使用说明"
-              }
+              placeholder="Supports Markdown, see editor instructions for details"
               value={descriptions}
               onChange={handleProjectChange}
-              labelClassName="col-span-full"
+              labelClassName="col-span-full text-white"
             />
           </FormSection>
         );

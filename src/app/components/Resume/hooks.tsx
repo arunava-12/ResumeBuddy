@@ -43,8 +43,9 @@ export const useSetDefaultScale = ({
         topAndBottomResumePadding;
       const resumeHeightPx = defaultResumeHeightRem * PX_PER_REM;
       const height = documentSize === "A4" ? A4_HEIGHT_PX : LETTER_HEIGHT_PX;
-      const defaultScale = Math.round((resumeHeightPx / height) * 100) / 100;
-      return defaultScale;
+      const calculated = Math.round((resumeHeightPx / height) * 100) / 100;
+return Math.max(calculated, 0.8);
+
     };
 
     const setDefaultScale = () => {

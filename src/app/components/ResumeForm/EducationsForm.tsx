@@ -12,61 +12,32 @@ import {
   changeFormHeading,
   updateFormHeadingIfNotCustomized,
 } from "lib/redux/settingsSlice";
-import { useLanguageRedux } from "../../lib/hooks/useLanguageRedux";
 
 export const EducationsForm = () => {
   const educations = useAppSelector(selectEducations);
   const dispatch = useAppDispatch();
-  const { language } = useLanguageRedux();
   const showDelete = educations.length > 1;
   const form = "educations";
 
   const translate = useCallback(
     (key: string) => {
-      const translations: Record<string, Record<string, string>> = {
-        educations: {
-          en: "Education",
-          zh: "教育经历",
-        },
-        addEducation: {
-          en: "Add Education",
-          zh: "添加教育经历",
-        },
-        deleteEducation: {
-          en: "Delete Education",
-          zh: "删除教育经历",
-        },
-        school: {
-          en: "School",
-          zh: "学校",
-        },
-        degree: {
-          en: "Degree",
-          zh: "学位",
-        },
-        gpa: {
-          en: "GPA",
-          zh: "GPA",
-        },
-        date: {
-          en: "Date",
-          zh: "日期",
-        },
-        descriptions: {
-          en: "Descriptions",
-          zh: "描述",
-        },
-        showBulletPoints: {
-          en: "Show bullet points",
-          zh: "显示项目符号",
-        },
+      const translations: Record<string, string> = {
+        educations: "Education",
+        addEducation: "Add Education",
+        deleteEducation: "Delete Education",
+        school: "School",
+        degree: "Degree",
+        gpa: "GPA",
+        date: "Date",
+        descriptions: "Descriptions",
+        showBulletPoints: "Show bullet points",
       };
 
-      return translations[key]?.[language] || key;
+      return translations[key] || key;
     },
-    [language]
+    []
   );
-  // 更新表单标题（仅在用户未自定义时）
+
   useEffect(() => {
     dispatch(
       updateFormHeadingIfNotCustomized({
@@ -74,17 +45,14 @@ export const EducationsForm = () => {
         value: translate("educations"),
       })
     );
-  }, [dispatch, language, form, translate]);
+  }, [dispatch, form, translate]);
 
   return (
     <Form form={form} addButtonText={translate("addEducation")}>
       {educations.map(
         ({ id, school, degree, gpa, date, descriptions }, idx) => {
           const handleEducationChange = (
-            ...[
-              field,
-              value,
-            ]: CreateHandleChangeArgsWithDescriptions<ResumeEducation>
+            ...[field, value]: CreateHandleChangeArgsWithDescriptions<ResumeEducation>
           ) => {
             dispatch(changeEducations({ idx, field, value } as any));
           };
@@ -103,55 +71,48 @@ export const EducationsForm = () => {
               deleteButtonTooltipText={translate("deleteEducation")}
             >
               <Input
-                label={translate("school")}
-                labelClassName="col-span-4"
-                name="school"
-                placeholder=""
-                value={school}
-                onChange={handleEducationChange}
-              />
-              <Input
-                label={translate("date")}
-                labelClassName="col-span-2"
-                name="date"
-                placeholder=""
-                value={date}
-                onChange={handleEducationChange}
-              />
-              <Input
-                label={translate("degree")}
-                labelClassName="col-span-4"
-                name="degree"
-                placeholder=""
-                value={degree}
-                onChange={handleEducationChange}
-              />
-              <Input
-                label={translate("gpa")}
-                labelClassName="col-span-2"
-                name="gpa"
-                placeholder=""
-                value={gpa}
-                onChange={handleEducationChange}
-              />{" "}
-              <div className="col-span-full">
-                <BulletListTextarea
-                  label={
-                    language === "en"
-                      ? "Additional Information (Optional)"
-                      : "附加信息（可选）"
-                  }
-                  labelClassName="col-span-full"
-                  name="descriptions"
-                  placeholder={
-                    language === "en"
-                      ? "Supports Markdown, see editor instructions for details"
-                      : "支持Markdown，详见编辑器使用说明"
-                  }
-                  value={descriptions}
-                  onChange={handleEducationChange}
-                />
-              </div>
+  label={translate("school")}
+  labelClassName="col-span-4 text-white"
+  name="school"
+  placeholder=""
+  value={school}
+  onChange={handleEducationChange}
+/>
+<Input
+  label={translate("date")}
+  labelClassName="col-span-2 text-white"
+  name="date"
+  placeholder=""
+  value={date}
+  onChange={handleEducationChange}
+/>
+<Input
+  label={translate("degree")}
+  labelClassName="col-span-4 text-white"
+  name="degree"
+  placeholder=""
+  value={degree}
+  onChange={handleEducationChange}
+/>
+<Input
+  label={translate("gpa")}
+  labelClassName="col-span-2 text-white"
+  name="gpa"
+  placeholder=""
+  value={gpa}
+  onChange={handleEducationChange}
+/>
+<div className="col-span-full">
+  <BulletListTextarea
+    label="Additional Information (Optional)"
+    labelClassName="col-span-full text-white"
+    name="descriptions"
+    placeholder="Supports Markdown, see editor instructions for details"
+    value={descriptions}
+    onChange={handleEducationChange}
+  />
+</div>
+
             </FormSection>
           );
         }

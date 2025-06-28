@@ -1,14 +1,13 @@
-// 语言相关类型
-export type SupportedLanguage = "zh" | "en";
+export type SupportedLanguage = "en";
 
 export interface ResumeProfile {
   name: string;
   email: string;
   phone: string;
   url: string;
-  summary: string[]; // 修改为字符串数组以支持换行
+  summary: string[];
   location: string;
-  photoUrl: string; // 添加照片 URL 字段
+  photoUrl: string;
 }
 
 export interface ResumeWorkExperience {
@@ -42,8 +41,11 @@ export interface FeaturedSkill {
 
 export interface ResumeSkills {
   featuredSkills: FeaturedSkill[];
-  descriptions: string[];
+  descriptions: string[]; //
+  categorySkills: Record<string, string>;
+  selectedCategories: Record<string, boolean>;
 }
+
 
 export interface ResumeCustom {
   descriptions: string[];

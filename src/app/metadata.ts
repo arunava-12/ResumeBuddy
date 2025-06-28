@@ -1,38 +1,36 @@
 export function getMetadata() {
   return {
-    metadataBase: new URL("https://resumetojob.ltlyl.fun/"),
-    title: "ResumeToJob - 免费开源简历生成器 | Free Open-Source Resume Builder",
+    metadataBase: new URL("https://ResumeBuddy.ltlyl.fun/"),
+    title: "ResumeBuddy - Free Open-Source Resume Builder",
     description:
-      "ResumeToJob是一个免费开源的简历制作网站，帮助您快速创建专业简历，支持多种模板和自定义选项。| ResumeToJob is a free and open-source resume builder that helps you create professional resumes quickly with multiple templates and customization options.",
+      "ResumeBuddy is a free and open-source resume builder that helps you create professional resumes quickly with multiple templates and customization options.",
     keywords:
-      "简历,开源简历,简历制作,简历生成器,Resume,Resume Builder,Open Source,Job,求职,模板,定制,多语言,free,open-source,professional,career,cv,template,customization",
+      "Resume, Resume Builder, Open Source, Job, Template, Customization, Free, Professional, Career, CV, Multi-language",
     openGraph: {
-      title:
-        "ResumeToJob - 免费开源简历生成器 | Free Open-Source Resume Builder",
+      title: "ResumeBuddy - Free Open-Source Resume Builder",
       description:
-        "ResumeToJob是一个免费开源的简历制作网站，帮助您快速创建专业简历，支持多种模板和自定义选项。| ResumeToJob is a free and open-source resume builder that helps you create professional resumes quickly with multiple templates and customization options.",
-      url: "https://resumetojob.ltlyl.fun/",
-      siteName: "ResumeToJob",
+        "ResumeBuddy is a free and open-source resume builder that helps you create professional resumes quickly with multiple templates and customization options.",
+      url: "https://ResumeBuddy.ltlyl.fun/",
+      siteName: "ResumeBuddy",
       images: [
         {
           url: "/logo-500.png",
           width: 500,
           height: 500,
-          alt: "ResumeToJob Logo",
+          alt: "ResumeBuddy Logo",
         },
       ],
-      locale: "zh_CN",
-      alternateLocales: ["en_US"],
+      locale: "en_US",
+      alternateLocales: [],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "ResumeToJob - 免费开源简历生成器 | Free Open-Source Resume Builder",
+      title: "ResumeBuddy - Free Open-Source Resume Builder",
       description:
-        "ResumeToJob是一个免费开源的简历制作网站，帮助您快速创建专业简历，支持多种模板和自定义选项。| ResumeToJob is a free and open-source resume builder that helps you create professional resumes quickly with multiple templates and customization options.",
+        "ResumeBuddy is a free and open-source resume builder that helps you create professional resumes quickly with multiple templates and customization options.",
       images: ["/logo-500.png"],
-      site: "@ResumeToJob",
+      site: "@ResumeBuddy",
     },
     robots: "index, follow",
   };

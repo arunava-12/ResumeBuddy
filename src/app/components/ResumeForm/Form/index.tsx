@@ -15,7 +15,6 @@ import {
   selectShowByForm,
   ShowForm,
 } from "lib/redux/settingsSlice";
-import { useLanguageRedux } from "../../../lib/hooks/useLanguageRedux";
 import {
   BuildingOfficeIcon,
   AcademicCapIcon,
@@ -29,10 +28,6 @@ import {
   moveSectionInForm,
 } from "lib/redux/resumeSlice";
 
-/**
- * BaseForm is the bare bone form, i.e. just the outline with no title and no control buttons.
- * ProfileForm uses this to compose its outline.
- */
 export const BaseForm = ({
   children,
   className,
@@ -41,7 +36,7 @@ export const BaseForm = ({
   className?: string;
 }) => (
   <section
-    className={`flex flex-col gap-3 rounded-md bg-white p-6 pt-4 shadow transition-opacity duration-200 ${className}`}
+className={`flex flex-col gap-3 rounded-2xl border border-white/20 bg-green-600/10 backdrop-blur-3xl p-6 pt-4 shadow-[0_4px_30px_rgba(0,0,0,0.1)] transition-opacity duration-200 ${className}`}
   >
     {children}
   </section>
@@ -66,38 +61,17 @@ export const Form = ({
 }) => {
   const showForm = useAppSelector(selectShowByForm(form));
   const heading = useAppSelector(selectHeadingByForm(form));
-  const { language } = useLanguageRedux();
 
-  // 翻译函数
   const translate = (key: string) => {
-    const translations: Record<string, Record<string, string>> = {
-      addWork: {
-        en: "Add Work Experience",
-        zh: "添加工作经历",
-      },
-      addEducation: {
-        en: "Add Education",
-        zh: "添加教育经历",
-      },
-      addProject: {
-        en: "Add Project",
-        zh: "添加项目",
-      },
-      deleteEducation: {
-        en: "Delete Education",
-        zh: "删除教育经历",
-      },
-      deleteWork: {
-        en: "Delete Work Experience",
-        zh: "删除工作经历",
-      },
-      deleteProject: {
-        en: "Delete Project",
-        zh: "删除项目",
-      },
+    const translations: Record<string, string> = {
+      addWork: "Add Work Experience",
+      addEducation: "Add Education",
+      addProject: "Add Project",
+      deleteEducation: "Delete Education",
+      deleteWork: "Delete Work Experience",
+      deleteProject: "Delete Project",
     };
-
-    return translations[key]?.[language] || key;
+    return translations[key] || key;
   };
 
   const dispatch = useAppDispatch();
@@ -112,7 +86,6 @@ export const Form = ({
 
   const isFirstForm = useAppSelector(selectIsFirstForm(form));
   const isLastForm = useAppSelector(selectIsLastForm(form));
-
   const handleMoveClick = (type: "up" | "down") => {
     dispatch(changeFormOrder({ form, type }));
   };
@@ -127,21 +100,17 @@ export const Form = ({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex grow items-center gap-2">
-          <Icon className="h-6 w-6 text-gray-600" aria-hidden="true" />
+          <Icon className="h-6 w-6 text-white" aria-hidden="true" />
           <input
             type="text"
-            className="block w-full border-b border-transparent text-lg font-semibold tracking-wide text-gray-900 outline-none hover:border-gray-300 hover:shadow-sm focus:border-gray-300 focus:shadow-sm"
+className="block pl-2 w-full rounded-md border-b-2 border-transparent text-lg font-semibold tracking-wide text-gray-800 outline-none transition-all duration-200 hover:border-gray-400 hover:shadow focus:border-gray-600 focus:shadow-md focus:text-gray-900"
             value={heading}
             onChange={(e) => setHeading(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-0.5">
-          {!isFirstForm && (
-            <MoveIconButton type="up" onClick={handleMoveClick} />
-          )}
-          {!isLastForm && (
-            <MoveIconButton type="down" onClick={handleMoveClick} />
-          )}
+          {!isFirstForm && <MoveIconButton type="up" onClick={handleMoveClick} />}
+          {!isLastForm && <MoveIconButton type="down" onClick={handleMoveClick} />}
           <ShowIconButton show={showForm} setShow={setShowForm} />
         </div>
       </div>
@@ -152,9 +121,7 @@ export const Form = ({
         <div className="mt-2 flex justify-end">
           <button
             type="button"
-            onClick={() => {
-              dispatch(addSectionInForm({ form }));
-            }}
+            onClick={() => dispatch(addSectionInForm({ form }))}
             className="flex items-center rounded-md bg-white py-2 pl-3 pr-4 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
             <PlusSmallIcon
@@ -187,6 +154,7 @@ export const FormSection = ({
   children: React.ReactNode;
 }) => {
   const dispatch = useAppDispatch();
+
   const handleDeleteClick = () => {
     dispatch(deleteSectionInFormByIdx({ form, idx }));
   };
@@ -201,7 +169,7 @@ export const FormSection = ({
       )}
       <div className="relative grid grid-cols-6 gap-3">
         {children}
-        <div className={`absolute right-0 top-0 flex gap-0.5 `}>
+        <div className="absolute right-0 top-0 flex gap-0.5">
           <div
             className={`transition-all duration-300 ${
               showMoveUp ? "" : "invisible opacity-0"

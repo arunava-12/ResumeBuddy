@@ -2,27 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import { SupportedLanguage } from "./types";
 
-// 判断是否在浏览器环境
+// Determine if running in a browser environment
 const isBrowser = typeof window !== "undefined";
 
-// 从本地存储或浏览器设置获取初始语言
+// Get initial language - always English now
 function getInitialLanguage(): SupportedLanguage {
-  if (!isBrowser) return "zh"; // 服务器端渲染默认使用中文
-
-  try {
-    // 尝试从localStorage获取
-    const savedLanguage = localStorage.getItem("language");
-    if (savedLanguage && (savedLanguage === "zh" || savedLanguage === "en")) {
-      return savedLanguage as SupportedLanguage;
-    }
-
-    // 如果没有localStorage设置，根据浏览器语言偏好智能选择
-    const browserLanguage = navigator.language.toLowerCase();
-    return browserLanguage.startsWith("zh") ? "zh" : "en";
-  } catch (error) {
-    console.error("Failed to get browser language", error);
-    return "zh"; // 默认中文
-  }
+  return "en";
 }
 
 interface LanguageState {
@@ -30,7 +15,7 @@ interface LanguageState {
 }
 
 const initialState: LanguageState = {
-  current: "zh", // 默认值，将在客户端被实际初始值替换
+  current: "en",
 };
 
 export const languageSlice = createSlice({
@@ -40,14 +25,11 @@ export const languageSlice = createSlice({
     setLanguage: (state, action: PayloadAction<SupportedLanguage>) => {
       state.current = action.payload;
 
-      // 保存到本地存储
+      // Save to localStorage and update <html lang>
       if (isBrowser) {
         try {
           localStorage.setItem("language", action.payload);
-
-          // 更新 HTML lang 属性
-          document.documentElement.lang =
-            action.payload === "zh" ? "zh-CN" : "en";
+          document.documentElement.lang = "en";
         } catch (error) {
           console.error("Failed to set language in localStorage", error);
         }
@@ -63,7 +45,7 @@ export const languageSlice = createSlice({
 
 export const { setLanguage, initializeLanguage } = languageSlice.actions;
 
-// 选择器
+// Selector
 export const selectLanguage = (state: RootState) => state.language.current;
 
 export default languageSlice.reducer;

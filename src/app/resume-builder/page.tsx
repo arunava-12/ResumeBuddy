@@ -2,36 +2,29 @@
 import { useState } from "react";
 import { ResumeForm } from "components/ResumeForm";
 import { Resume } from "components/Resume";
-import { useLanguageRedux } from "../lib/hooks/useLanguageRedux";
 
 export default function Create() {
   const [activeTab, setActiveTab] = useState<"form" | "preview">("form");
-  const { language } = useLanguageRedux();
 
   const translate = (key: "edit" | "preview") => {
     const translations = {
-      edit: {
-        en: "Edit",
-        zh: "编辑",
-      },
-      preview: {
-        en: "Preview",
-        zh: "预览",
-      },
+      edit: "Edit",
+      preview: "Preview",
     };
-    return translations[key]?.[language] || key;
+    return translations[key] || key;
   };
 
   return (
-    <main className="relative h-full w-full overflow-hidden bg-gray-50">
-      {/* 手机端 Tab 切换 */}
+<main className="relative min-h-screen overflow-hidden bg-gray-50">
+
+      {/* Mobile tab switch */}
       <div className="md:hidden">
-        <div className="flex border-b border-gray-200 bg-white">
+        <div className="flex border-b border-gray-200 bg-white/90 backdrop-blur-sm">
           <button
             onClick={() => setActiveTab("form")}
             className={`flex-1 px-4 py-3 text-center font-medium transition-colors ${
               activeTab === "form"
-                ? "border-b-2 border-blue-600 bg-blue-50 text-blue-600"
+                ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-600"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -41,7 +34,7 @@ export default function Create() {
             onClick={() => setActiveTab("preview")}
             className={`flex-1 px-4 py-3 text-center font-medium transition-colors ${
               activeTab === "preview"
-                ? "border-b-2 border-blue-600 bg-blue-50 text-blue-600"
+                ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-600"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -62,12 +55,12 @@ export default function Create() {
         </div>
       </div>
 
-      {/* 桌面端网格布局 */}
-      <div className="hidden h-full grid-cols-6 md:grid">
-        <div className="col-span-3">
+      {/* Desktop grid layout */}
+      <div className="hidden min-h-screen h-full grid-cols-6 md:grid">
+        <div className="col-span-3 h-full">
           <ResumeForm />
         </div>
-        <div className="col-span-3">
+        <div className="col-span-3 h-full">
           <Resume />
         </div>
       </div>

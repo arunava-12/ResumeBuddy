@@ -24,12 +24,7 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 /**
- * Hook to save store to local storage on store change
- */
-/**
- * 使用防抖函数包装保存操作
- * @param func 要防抖的函数
- * @param delay 延迟时间（毫秒）
+ * Debounce wrapper for a function
  */
 const debounce = <T extends (...args: any[]) => any>(
   func: T,
@@ -49,22 +44,19 @@ const debounce = <T extends (...args: any[]) => any>(
 };
 
 /**
- * 钩子: 在 Redux 状态变化时保存状态到 localStorage
- * 使用防抖以减少频繁写入
+ * Hook: Save Redux state to localStorage on change (with debounce)
  */
 export const useSaveStateToLocalStorageOnChange = () => {
   useEffect(() => {
-    console.info("初始化 Redux 状态保存到 localStorage 的监听");
+    console.info("Initializing Redux state sync with localStorage");
 
-    // 从 localStorage 加载初始状态
     const initialState = loadStateFromLocalStorage();
     if (initialState) {
-      console.info("应用启动时从 localStorage 恢复了状态");
+      console.info("Restored state from localStorage");
     } else {
-      console.info("localStorage 中没有找到初始状态，将使用默认状态");
+      console.info("No saved state found, using defaults");
     }
 
-    // 使用防抖动函数包装保存操作，延迟500毫秒
     const debouncedSave = debounce((state: RootState) => {
       saveStateToLocalStorage(state);
     }, 500);
@@ -73,59 +65,40 @@ export const useSaveStateToLocalStorageOnChange = () => {
       debouncedSave(store.getState());
     });
 
-    // 在组件卸载时取消订阅
     return () => {
       unsubscribe();
-      console.info("清理 Redux 状态变化监听");
+      console.info("Unsubscribed from Redux state changes");
     };
   }, []);
 };
 
-// 用于跟踪是否已初始化的标志
 let storeInitialized = false;
 
+/**
+ * Hook: Initialize Redux store from localStorage (only once)
+ */
 export const useSetInitialStore = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // 如果已初始化，则跳过
     if (storeInitialized) {
-      console.info("Redux 存储已初始化，跳过重复操作");
+      console.info("Redux store already initialized, skipping");
       return;
     }
 
-    console.info("开始初始化 Redux 存储");
-
-    // 标记为已初始化
+    console.info("Initializing Redux store from localStorage");
     storeInitialized = true;
 
-    // 尝试从 localStorage 加载状态
     const state = loadStateFromLocalStorage();
 
-    // 获取当前语言
-    const getCurrentLanguage = (): "zh" | "en" => {
-      if (typeof window !== "undefined") {
-        try {
-          const savedLanguage = localStorage.getItem("language");
-          if (
-            savedLanguage &&
-            (savedLanguage === "zh" || savedLanguage === "en")
-          ) {
-            return savedLanguage;
-          }
-        } catch (e) {
-          console.error("获取语言设置失败:", e);
-        }
-      }
-      return "zh"; // 默认使用中文
+    const getCurrentLanguage = (): "en" => {
+      return "en";
     };
-    const currentLanguage = getCurrentLanguage();
 
-    // 根据当前语言选择正确的标题
-    const languageHeadings = formHeadings[currentLanguage] || formHeadings.zh;
+    const currentLanguage = getCurrentLanguage();
+    const languageHeadings = formHeadings[currentLanguage];
 
     if (!state) {
-      // 如果没有本地存储的状态，但有语言设置，则更新表单标题
       dispatch(
         setSettings({
           ...initialSettings,
@@ -136,9 +109,6 @@ export const useSetInitialStore = () => {
     }
 
     if (state.resume) {
-      // We merge the initial state with the stored state to ensure
-      // backward compatibility, since new fields might be added to
-      // the initial state over time.
       const mergedResumeState = deepMerge(
         initialResumeState,
         state.resume
@@ -147,10 +117,8 @@ export const useSetInitialStore = () => {
     }
 
     if (state.settings) {
-      // 只为用户未自定义的标题设置语言标题，保留用户自定义的标题
       const updatedFormToHeading = { ...languageHeadings };
 
-      // 如果存储的设置中有 customizedHeadings 和 formToHeading，则保留用户自定义的标题
       if (state.settings.customizedHeadings && state.settings.formToHeading) {
         (Object.keys(state.settings.customizedHeadings) as ShowForm[]).forEach(
           (formKey) => {

@@ -80,8 +80,10 @@ export const ResumePDF = ({
           (proj.descriptions && proj.descriptions.length > 0),
       ),
     skills:
-      skills.featuredSkills.some((skill) => skill.skill) ||
-      (skills.descriptions && skills.descriptions.length > 0),
+  skills.featuredSkills.some((skill) => skill.skill) ||
+  (skills.descriptions && skills.descriptions.length > 0) ||
+  (skills.categorySkills && Object.values(skills.categorySkills).some((v) => v?.trim()))
+,
     custom: custom.descriptions && custom.descriptions.length > 0,
   };
 
@@ -141,7 +143,7 @@ export const ResumePDF = ({
   };
   return (
     <>
-      <Document title={`${name} Resume`} author={name} producer={"resumetojob"}>
+      <Document title={`${name} Resume`} author={name} producer={"ResumeBuddy"}>
         <Page
           size={documentSize === "A4" ? "A4" : "LETTER"}
           style={{

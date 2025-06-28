@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "lib/redux/store";
 import type {
-  FeaturedSkill,
   Resume,
   ResumeEducation,
   ResumeProfile,
@@ -11,14 +10,16 @@ import type {
 } from "lib/redux/types";
 import type { ShowForm } from "lib/redux/settingsSlice";
 
+// Initial values
+
 export const initialProfile: ResumeProfile = {
   name: "",
-  summary: [], // 修改为空数组
+  summary: [],
   email: "",
   phone: "",
   location: "",
   url: "",
-  photoUrl: "", // 照片URL字段的初始值
+  photoUrl: "",
 };
 
 export const initialWorkExperience: ResumeWorkExperience = {
@@ -45,13 +46,24 @@ export const initialProject: ResumeProject = {
   descriptions: [],
 };
 
-export const initialFeaturedSkill: FeaturedSkill = { skill: "", rating: 4 };
-export const initialFeaturedSkills: FeaturedSkill[] = Array(6).fill({
-  ...initialFeaturedSkill,
-});
+// Updated skill format: categorized + toggled
 export const initialSkills: ResumeSkills = {
-  featuredSkills: initialFeaturedSkills,
-  descriptions: [],
+  featuredSkills: [], // ✅ add this
+  descriptions: [], // ✅ add this
+  categorySkills: {
+    Languages : "",
+    Frameworks : "",
+    Tools : "",
+    Libraries : "",  
+    "Soft Skills": "",
+  },
+  selectedCategories: {
+    Languages : true,
+    Frameworks : true,
+    Tools : true,
+    Libraries : true,
+    "Soft Skills ": true,
+  },
 };
 
 export const initialCustom = {
@@ -67,7 +79,7 @@ export const initialResumeState: Resume = {
   custom: initialCustom,
 };
 
-// Keep the field & value type in sync with CreateHandleChangeArgsWithDescriptions (components\ResumeForm\types.ts)
+// Generic type for updating fields with optional descriptions
 export type CreateChangeActionWithDescriptions<T> = {
   idx: number;
 } & (
@@ -87,137 +99,131 @@ export const resumeSlice = createSlice({
       action: PayloadAction<{
         field: keyof ResumeProfile;
         value: string | string[];
-      }>,
+      }>
     ) => {
       const { field, value } = action.payload;
       draft.profile[field] = value as any;
     },
+
     changeWorkExperiences: (
       draft,
       action: PayloadAction<
         CreateChangeActionWithDescriptions<ResumeWorkExperience>
-      >,
+      >
     ) => {
       const { idx, field, value } = action.payload;
-      const workExperience = draft.workExperiences[idx];
-      workExperience[field] = value as any;
+      draft.workExperiences[idx][field] = value as any;
     },
+
     changeEducations: (
       draft,
       action: PayloadAction<
         CreateChangeActionWithDescriptions<ResumeEducation>
-      >,
+      >
     ) => {
       const { idx, field, value } = action.payload;
-      const education = draft.educations[idx];
-      education[field] = value as any;
+      draft.educations[idx][field] = value as any;
     },
+
     changeProjects: (
       draft,
-      action: PayloadAction<CreateChangeActionWithDescriptions<ResumeProject>>,
+      action: PayloadAction<
+        CreateChangeActionWithDescriptions<ResumeProject>
+      >
     ) => {
       const { idx, field, value } = action.payload;
-      const project = draft.projects[idx];
-      project[field] = value as any;
+      draft.projects[idx][field] = value as any;
     },
+
     changeSkills: (
       draft,
       action: PayloadAction<
-        | { field: "descriptions"; value: string[] }
-        | {
-            field: "featuredSkills";
-            idx: number;
-            skill: string;
-            rating: number;
-          }
-      >,
+        | { field: "categorySkills"; value: Record<string, string> }
+        | { field: "selectedCategories"; value: Record<string, boolean> }
+      >
     ) => {
-      const { field } = action.payload;
-      if (field === "descriptions") {
-        const { value } = action.payload;
-        draft.skills.descriptions = value;
-      } else {
-        const { idx, skill, rating } = action.payload;
-        const featuredSkill = draft.skills.featuredSkills[idx];
-        featuredSkill.skill = skill;
-        featuredSkill.rating = rating;
+      const { field, value } = action.payload;
+      if (field === "categorySkills") {
+        draft.skills.categorySkills = value;
+      } else if (field === "selectedCategories") {
+        draft.skills.selectedCategories = value;
       }
     },
+
     changeCustom: (
       draft,
-      action: PayloadAction<{ field: "descriptions"; value: string[] }>,
+      action: PayloadAction<{ field: "descriptions"; value: string[] }>
     ) => {
-      const { value } = action.payload;
-      draft.custom.descriptions = value;
+      draft.custom.descriptions = action.payload.value;
     },
+
     addSectionInForm: (draft, action: PayloadAction<{ form: ShowForm }>) => {
       const { form } = action.payload;
+      const generateId = () =>
+        Date.now().toString() + Math.random().toString(36).substr(2, 9);
+
       switch (form) {
         case "workExperiences": {
-          const newWorkExperience = structuredClone(initialWorkExperience);
-          newWorkExperience.id =
-            Date.now().toString() + Math.random().toString(36).substr(2, 9);
-          draft.workExperiences.push(newWorkExperience);
-          return draft;
+          const newWork = structuredClone(initialWorkExperience);
+          newWork.id = generateId();
+          draft.workExperiences.push(newWork);
+          break;
         }
         case "educations": {
-          const newEducation = structuredClone(initialEducation);
-          newEducation.id =
-            Date.now().toString() + Math.random().toString(36).substr(2, 9);
-          draft.educations.push(newEducation);
-          return draft;
+          const newEdu = structuredClone(initialEducation);
+          newEdu.id = generateId();
+          draft.educations.push(newEdu);
+          break;
         }
         case "projects": {
-          const newProject = structuredClone(initialProject);
-          newProject.id =
-            Date.now().toString() + Math.random().toString(36).substr(2, 9);
-          draft.projects.push(newProject);
-          return draft;
+          const newProj = structuredClone(initialProject);
+          newProj.id = generateId();
+          draft.projects.push(newProj);
+          break;
         }
       }
     },
+
     moveSectionInForm: (
       draft,
       action: PayloadAction<{
         form: ShowForm;
         idx: number;
         direction: "up" | "down";
-      }>,
+      }>
     ) => {
       const { form, idx, direction } = action.payload;
+
       if (form !== "skills" && form !== "custom") {
+        const arr = draft[form];
         if (
           (idx === 0 && direction === "up") ||
-          (idx === draft[form].length - 1 && direction === "down")
+          (idx === arr.length - 1 && direction === "down")
         ) {
-          return draft;
+          return;
         }
-
-        const section = draft[form][idx];
-        if (direction === "up") {
-          draft[form][idx] = draft[form][idx - 1];
-          draft[form][idx - 1] = section;
-        } else {
-          draft[form][idx] = draft[form][idx + 1];
-          draft[form][idx + 1] = section;
-        }
+        const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+        [arr[idx], arr[swapIdx]] = [arr[swapIdx], arr[idx]];
       }
     },
+
     deleteSectionInFormByIdx: (
       draft,
-      action: PayloadAction<{ form: ShowForm; idx: number }>,
+      action: PayloadAction<{ form: ShowForm; idx: number }>
     ) => {
       const { form, idx } = action.payload;
       if (form !== "skills" && form !== "custom") {
         draft[form].splice(idx, 1);
       }
     },
+
     setResume: (draft, action: PayloadAction<Resume>) => {
       return action.payload;
     },
   },
 });
 
+// Actions
 export const {
   changeProfile,
   changeWorkExperiences,
@@ -231,6 +237,7 @@ export const {
   setResume,
 } = resumeSlice.actions;
 
+// Selectors
 export const selectResume = (state: RootState) => state.resume;
 export const selectProfile = (state: RootState) => state.resume.profile;
 export const selectWorkExperiences = (state: RootState) =>

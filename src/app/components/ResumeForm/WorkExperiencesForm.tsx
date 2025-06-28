@@ -11,56 +11,31 @@ import {
   selectWorkExperiences,
 } from "lib/redux/resumeSlice";
 import type { ResumeWorkExperience } from "lib/redux/types";
-import { useLanguageRedux } from "../../lib/hooks/useLanguageRedux";
-import {
-  changeFormHeading,
-  updateFormHeadingIfNotCustomized,
-} from "lib/redux/settingsSlice";
+import { updateFormHeadingIfNotCustomized } from "lib/redux/settingsSlice";
 
 export const WorkExperiencesForm = () => {
   const workExperiences = useAppSelector(selectWorkExperiences);
   const dispatch = useAppDispatch();
-  const { language } = useLanguageRedux();
 
   const translate = useCallback(
     (key: string) => {
-      const translations: Record<string, Record<string, string>> = {
-        workExperiences: {
-          en: "Work Experience",
-          zh: "工作经历",
-        },
-        addWork: {
-          en: "Add Work Experience",
-          zh: "添加工作经历",
-        },
-        deleteWork: {
-          en: "Delete Work Experience",
-          zh: "删除工作经历",
-        },
-        company: {
-          en: "Company",
-          zh: "公司",
-        },
-        position: {
-          en: "Position",
-          zh: "职位",
-        },
-        date: {
-          en: "Date",
-          zh: "日期",
-        },
-        responsibilities: {
-          en: "Responsibilities",
-          zh: "职责描述",
-        },
+      const translations: Record<string, string> = {
+        workExperiences: "Work Experience",
+        addWork: "Add Work Experience",
+        deleteWork: "Delete Work Experience",
+        company: "Company",
+        position: "Position",
+        date: "Date",
+        responsibilities: "Responsibilities",
       };
 
-      return translations[key]?.[language] || key;
+      return translations[key] || key;
     },
-    [language]
+    []
   );
+
   const showDelete = workExperiences.length > 1;
-  // 更新表单标题（仅在用户未自定义时）
+
   useEffect(() => {
     dispatch(
       updateFormHeadingIfNotCustomized({
@@ -68,23 +43,18 @@ export const WorkExperiencesForm = () => {
         value: translate("workExperiences"),
       })
     );
-  }, [dispatch, language, translate]);
+  }, [dispatch, translate]);
 
   return (
     <Form form="workExperiences" addButtonText={translate("addWork")}>
       {workExperiences.map(
         ({ id, company, jobTitle, date, descriptions }, idx) => {
           const handleWorkExperienceChange = (
-            ...[
-              field,
-              value,
-            ]: CreateHandleChangeArgsWithDescriptions<ResumeWorkExperience>
+            ...[field, value]: CreateHandleChangeArgsWithDescriptions<ResumeWorkExperience>
           ) => {
-            // TS doesn't support passing union type to single call signature
-            // https://github.com/microsoft/TypeScript/issues/54027
-            // any is used here as a workaround
             dispatch(changeWorkExperiences({ idx, field, value } as any));
           };
+
           const showMoveUp = idx !== 0;
           const showMoveDown = idx !== workExperiences.length - 1;
 
@@ -98,40 +68,35 @@ export const WorkExperiencesForm = () => {
               showDelete={showDelete}
               deleteButtonTooltipText={translate("deleteWork")}
             >
-              {" "}
               <Input
                 label={translate("company")}
-                labelClassName="col-span-full"
+                labelClassName="col-span-full text-white"
                 name="company"
                 placeholder=""
                 value={company}
                 onChange={handleWorkExperienceChange}
-              />{" "}
+              />
               <Input
                 label={translate("position")}
-                labelClassName="col-span-4"
+                labelClassName="col-span-4 text-white"
                 name="jobTitle"
                 placeholder=""
                 value={jobTitle}
                 onChange={handleWorkExperienceChange}
-              />{" "}
+              />
               <Input
                 label={translate("date")}
-                labelClassName="col-span-2"
+                labelClassName="col-span-2 text-white"
                 name="date"
                 placeholder=""
                 value={date}
                 onChange={handleWorkExperienceChange}
-              />{" "}
+              />
               <BulletListTextarea
                 label={translate("responsibilities")}
-                labelClassName="col-span-full"
+                labelClassName="col-span-full text-white"
                 name="descriptions"
-                placeholder={
-                  language === "en"
-                    ? "Supports Markdown, see editor instructions for details"
-                    : "支持Markdown，详见编辑器使用说明"
-                }
+                placeholder="Supports Markdown, see editor instructions for details"
                 value={descriptions}
                 onChange={handleWorkExperienceChange}
               />
