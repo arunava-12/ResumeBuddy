@@ -72,9 +72,7 @@ We welcome community contributors to participate in project development, especia
 
 ### 🔗 Online Usage
 
-Visit [https://ResumeBuddy.ltlyl.fun/](https://ResumeBuddy.ltlyl.fun/) to get started
-
-Alternative link: [https://resume-to-job.vercel.app/](https://resume-to-job.vercel.app/)
+Visit [https://resume-to-job.vercel.app/](https://resume-to-job.vercel.app/) to get started :
 
 ### 💻 Local Development
 
