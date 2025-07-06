@@ -1,7 +1,3 @@
-<div align="center">
-  <img src="public\logo-500.png" alt="ResumeBuddy Logo" width="200" />
-</div>
-
 # ResumeBuddy
 
 <div align="center">
